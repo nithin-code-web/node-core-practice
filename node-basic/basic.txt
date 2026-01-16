@@ -1,0 +1,422 @@
+modules
+
+os --> to know about operating system
+
+const os = require("os")
+
+console.log("Host Name :",os.hostname())
+
+console.log("home directory:",os.homedir())
+
+console.log("TotalMemory :",os.totalmem())
+
+console.log("Free Memory :",os.freemem())
+
+console.log("version :",os.version())
+
+console.log("Architecture :",os.arch())
+
+
+
+file system
+
+fs --->  to work with files
+
+const fs = require("fs");
+
+// writing in file
+
+var text = "this is a new text file..";
+
+fs.writeFile("hello.txt", text, (err) => {
+  if (err) {
+    console.log("error occurred while writing a file..", err);
+  } else {
+    console.log("File written successfully");
+  }
+});
+
+// read a file info
+fs.readFile("hello.txt", (err, data) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(data.toString());
+  }
+});
+
+
+reading data from text1 file and stores in text2 file
+
+const fs = require("fs")
+
+fs.readFile("text1.txt",(err,data) => {
+    if(err) {
+        console.log("err occurred while reading file :",err)
+    } else {
+        var content = data.toString();
+        
+        fs.writeFile("text2.txt",content,(err) => {
+            if(err) {
+                console.log("caught err while writing in new file..")
+            } else {
+                console.log("file written successfully...")
+            }
+        })
+    }
+})
+
+
+
+
+// stream --> 
+
+
+// read stream 
+
+const fs = require("fs")
+
+const readStream = fs.createReadStream("text2.txt")
+
+var data = ""
+
+readStream.on("data",(chunk) => {
+    data += chunk
+    console.log("received"+ chunk.length + "bytes of data");
+    console.log(chunk.toString())
+})
+
+readStream.on("end",() => {
+    console.log("no more data..")
+})
+
+readStream.on("error",(err) => {
+    console.log("error :"+err)    
+})
+
+
+// write stream 
+
+ const fs = require("fs");
+const readStream = fs.createReadStream("text1.txt");
+
+const writestream =  fs.createWriteStream("output.txt");
+
+readStream.on('data', (chunk) => {
+    console.log("writing"+chunk.length+"bytes of data..");
+    writestream.write(chunk)
+})
+
+readStream.on("error" , (err) => {
+    console.log("error occurred while doing task..")
+})
+
+readStream.on("end",() => {
+    console.log("no more data to read and write...")
+})
+
+//duplex.. 
+
+const fs = require("fs");
+const readStream = fs.createReadStream("text1.txt");
+
+const writestream =  fs.createWriteStream("output.txt");
+
+readStream.pipe(writestream); //duplex
+
+readStream.on("error" , (err) => {
+    console.log("error occurred while doing task..")
+})
+
+readStream.on("end",() => {
+    console.log("data written in new file successfully..")
+})
+
+
+
+//transform
+
+const fs = require('fs');
+
+const zlib = require('zlib');
+
+const gzip = zlib.createGzip();
+
+const readStream = fs.createReadStream('text1.txt');
+const writestream = fs.createWriteStream("xyz.txt.gz");
+
+readStream.pipe(gzip).pipe(writestream);
+
+writestream.on('finish',() => {
+    console.log('file successfully compressed..')
+})
+
+
+// events..
+
+const event = require("events");
+const eventEmitter = new event.EventEmitter();
+
+//custom events
+eventEmitter.on("connect" ,() => {
+    console.log("connection successful..")
+});
+
+eventEmitter.on("disconnect" , () => {
+    console.log("disconnected successful..")
+})
+
+eventEmitter.emit("connect");
+eventEmitter.emit("disconnect")
+
+
+//chat app mini project 
+
+const event = require("events");
+const chatGroup = new event.EventEmitter();
+
+const activeUsers = []
+
+chatGroup.on("join",(name) => {
+    console.log(`${name} has joined the chat.`)
+    activeUsers.push(name);
+});
+
+chatGroup.on("exit",(name) => {
+    console.log(`${name} has left the chat.`)
+    activeUsers.splice(activeUsers.indexOf(name),1);
+})
+
+chatGroup.on('fetchActiveUsers',() => {
+    console.log(`active users : ${activeUsers.length}`)
+})
+
+chatGroup.on("message",(name,message) => {
+    console.log(`${name} : ${message}.`)
+})
+
+// chatGroup.emit('message',"nithin","hello i am nithin");
+// chatGroup.emit("join","nithin")
+
+chatGroup.emit("join","sai")
+chatGroup.emit("join","nithin")=
+chatGroup.emit("fetchActiveUsers")
+
+
+--------web server with http module-------------
+
+ex-1 :
+
+const http = require("http");
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req,res) => {
+    res.statuscode = 200;
+    res.setHeader('content-type','text/plain');
+
+    res.end("hello world!\n");
+});
+
+server.listen(port,hostname ,() => {
+    console.log(`server is running at http://${hostname}:${port}/`);
+})
+
+ex-2: 
+
+//login page 
+
+const http = require("http");
+const port = 5100
+var respondContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <!-- The form action and method attributes define where the data is sent -->
+        <form action="/login" method="POST">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <!-- Use type="text" for username/email input -->
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <!-- Use type="password" to mask characters -->
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>
+`;
+
+const server = http.createServer((req,res) => {
+    res.writeHead(200,{'content-type' : 'text/html'})
+    res.end(respondContent)
+});
+
+server.listen(port,() => {
+    console.log(`server is listening on http://localhost:${port}`)
+})
+
+
+
+express app:
+
+const express = require("express");
+const app = express();
+app.use(express.json());
+const port = 5500;
+
+const users = [
+  {
+    id: 1,
+    name: "nithin",
+    age: 21,
+  },
+  {
+    id: 2,
+    name: "sai",
+    age: 22,
+  },
+];
+
+//get method
+app.get("/users", (req, res) => {
+  res.send(users);
+});
+
+
+//post method
+app.post("/users", (req, res) => {
+  const { id, name, age } = req.body;
+
+  if (!id || !name || !age) {
+    return res.status(400).send("invalid user data");
+  }
+  //avoids existing user
+  const existingUser = users.find((user) => user.id === id);
+  if (existingUser) {
+    return res.status(409).send("User already exists");
+  }
+  users.push({ id, name, age });
+
+  res.status(201).json({
+    message : "user added successfully",
+    user : {id,name,age}
+  })
+});
+
+
+
+//delete method 
+app.delete("/users/:id",(req,res) => {
+    const id = parseInt(req.params.id)
+
+    const userIndex = users.findIndex((user) => user.id === id)
+
+    if (userIndex === -1) {
+        return res.status(404).send("user not found");
+    }
+
+    users.splice(userIndex,1)
+
+    res.status(200).json({
+        message : "user removed successfully",
+    })
+});
+
+
+//PUT METHOD
+app.put("/users/:id",(req,res) => {
+    const id = parseInt(req.params.id)
+    const {name,age} = req.body
+
+    if (!name || !age) {
+        return res.status(400).send("invalid user data")
+    }
+
+    const userIndex = users.findIndex(user => user.id === id)
+
+    if (userIndex === -1) {
+        return res.status(404).send("user not found")
+    }
+
+    users[userIndex] = {
+        ...users[userIndex],
+        name , 
+        age
+    }
+
+    res.status(200).json({
+        message : "user updated successfully",
+        user : users[userIndex]
+    })
+})
+
+app.listen(port, () => {
+  console.log(`server is running on http://localhost:${port}/users`);
+});
+
+
+
+
+//http:localhost:5500/users
