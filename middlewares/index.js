@@ -27,7 +27,7 @@ const users = [
 ]
 
 app.get("/users",(req,res) => {
-    throw new Error("Something went wrong!");
+    throw new Error(); // to test error handling middleware
     res.send(users)
 })
 
@@ -37,6 +37,8 @@ const errorHandlingMiddleware = (err,req,res,next) => {
 }
 
 app.use(errorHandlingMiddleware)
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

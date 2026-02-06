@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #222;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            color: white;
+            margin: 0;
+        }
+
+        .nav-links button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-links button:hover {
+            background-color: #e65c00;
+        }
+
+        /* Login Box */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 70px);
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            width: 320px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .box h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .box button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #ff6600;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .box button:hover {
+            background: #e65c00;
+        }
+
+        .box p {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .box a {
+            color: #ff6600;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>MyStore</h2>
+        <div class="nav-links">
+            <button type="button" onclick="location.href='/user/'">Home</button>
+            <button type="button" onclick="location.href='/user/login'">Login</button>
+            <button type="button" onclick="location.href='/user/register'">Register</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="box">
+            <h3>Login</h3>
+            <form action="/user/login" method="post">
+                <input name="email" type="email" placeholder="Email">
+                <input name="password" type="password" placeholder="Password">
+                <button type="submit">Login</button>
+            </form>
+
+            <h1><%= typeof message !== "undefined" ? message : "" %></h1>
+            
+            <p>Don’t have an account?
+                <a href="/user/register">Register</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>
